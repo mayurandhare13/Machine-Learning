@@ -1,5 +1,6 @@
 library(e1071)
 library(ggplot2)
+library(rpart)
 
 dataset = read.csv('data/Position_Salaries.csv')
 dataset = dataset[2:3]
@@ -34,5 +35,23 @@ ggplot() +
                                                                         Level4=x_grid^4))), 
             colour='blue') +
   ggtitle("Truth or Bluff (Poly Regression)") +
+  xlab("Levels") + 
+  ylab("Salary")
+
+# Decision Tree Regressor
+
+  dt_regressor = rpart(formula=Salary~., data=dataset, 
+                      control=rpart.control(minsplit=1))
+                      
+  y_pred = predict(dt_regressor, data.frame(Level=6.5))
+
+  x_grid = seq(min(dataset$Level), max(dataset$Level), 0.01)
+  
+  ggplot() +
+  geom_point(aes(x=dataset$Level, y=dataset$Salary), colour='red') +
+  geom_line(aes(x=dataset$Level, y=predict(dt_regressor, 
+                            newdata=dataset)), 
+            colour='blue') +
+  ggtitle("Truth or Bluff (Decision Tree Regression)") +
   xlab("Levels") + 
   ylab("Salary")
