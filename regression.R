@@ -1,6 +1,7 @@
 library(e1071)
 library(ggplot2)
-library(rpart)
+library(rpart) 
+library(randomForest)
 
 dataset = read.csv('data/Position_Salaries.csv')
 dataset = dataset[2:3]
@@ -59,11 +60,10 @@ ggplot() +
 
 # Random Forest Regressor
 
-  install.packages('randomForest')
-  library(randomForest)
-
   rf_regressor = randomForest(x=dataset[1],
                               y=dataset$Salary, ntree=200)
+  # dataset$Salary -> returns Series
+  # dataset[1] -> returns dataframe
 
   y_pred = predict(rf_regressor, data.frame(Level=6.5))
 
