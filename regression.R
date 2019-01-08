@@ -1,6 +1,5 @@
 library(e1071)
 library(ggplot2)
-library(rpart) 
 library(randomForest)
 library(caTools)
 
@@ -43,7 +42,7 @@ ggplot() +
   ylab("Salary")
 
 ## Decision Tree Regressor
-
+library(rpart) 
   dt_regressor = rpart(formula=Salary~., data=dataset, 
                       control=rpart.control(minsplit=1))
 
@@ -104,5 +103,13 @@ logi_regressor = glm(formula = Purchased ~ . , family = binomial,
 
 y_prob = predict(logi_regressor, type='response', newdata=test_data[-4])
 y_pred = ifelse(y_prob > 0.5, 1, 0)
+
+cm = table(test_data[, 4], y_pred)
+
+
+## KNN
+library(class)
+
+y_pred = knn(train = train_data[, -4], test = test_data[, -4], cl = train_data[, 4], k = 5)
 
 cm = table(test_data[, 4], y_pred)
