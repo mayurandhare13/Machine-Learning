@@ -2,6 +2,9 @@ library(e1071)
 library(ggplot2)
 library(rpart) 
 library(randomForest)
+library(caTools)
+
+set.seed(139)
 
 dataset = read.csv('data/Position_Salaries.csv')
 dataset = dataset[2:3]
@@ -17,7 +20,7 @@ ggplot() +
   xlab("Levels") + 
   ylab("Salary")
 
-# Polynomial Regression
+## Polynomial Regression
 
 dataset$Level2 = dataset$Level^2
 dataset$Level3 = dataset$Level^3
@@ -39,7 +42,7 @@ ggplot() +
   xlab("Levels") + 
   ylab("Salary")
 
-# Decision Tree Regressor
+## Decision Tree Regressor
 
   dt_regressor = rpart(formula=Salary~., data=dataset, 
                       control=rpart.control(minsplit=1))
@@ -58,7 +61,7 @@ ggplot() +
   ylab("Salary")
 
 
-# Random Forest Regressor
+## Random Forest Regressor
 
   rf_regressor = randomForest(x=dataset[1],
                               y=dataset$Salary, ntree=200)
@@ -77,3 +80,29 @@ ggplot() +
   ggtitle("Truth or Bluff (Random Forest Regression)") +
   xlab("Levels") + 
   ylab("Salary")
+
+
+## Logistic Regression
+dataset = read.csv('data/Social_Network_Ads.csv')
+
+# encoding categorical features
+dataset$Gender = factor(dataset$Gender, levels = c('Male', 'Female'), labels = c(1, 2))
+
+dataset = dataset[, 2:5]
+
+# split data
+split = sample.split(dataset$Purchased, SplitRatio = 0.8)
+train_data = subset(dataset, split == TRUE)
+test_data = subset(dataset, split == FALSE)
+
+# Scaling
+train_data[, 2:3] = scale(train_data[, 2:3])
+test_data[, 2:3] = scale(test_data[, 2:3])
+
+logi_regressor = glm(formula = Purchased ~ . , family = binomial,
+                     data = train_data)
+
+y_prob = predict(logi_regressor, type='response', newdata=test_data[-4])
+y_pred = ifelse(y_prob > 0.5, 1, 0)
+
+cm = table(test_data[, 4], y_pred)
