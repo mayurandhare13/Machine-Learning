@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from sklearn.preprocessing import LabelEncoder, OneHotEncoder
 from sklearn.cluster import KMeans
 
 dataset = pd.read_csv('data/Mall.csv')
@@ -34,4 +35,23 @@ plt.title("Clusters of Clients")
 plt.xlabel("Annual Income(k$)")
 plt.ylabel("Spending Score (1-100)")
 plt.legend()
+plt.show()
+
+
+# Taking all the features into consideration
+
+encoder = LabelEncoder()
+data = dataset.iloc[:, :].values
+data[:, 1] = encoder.fit_transform(data[:, 1])
+
+wcss = []
+for i in range(1, 11):
+    km_classifier = KMeans(n_clusters=i, init='k-means++',max_iter=300, n_init=10)
+    km_classifier.fit(data)
+    wcss.append(km_classifier.inertia_)
+
+plt.plot(range(1, 11), wcss)
+plt.title("The Elbow method")
+plt.xlabel("Number of clusters")
+plt.ylabel("WCSS")
 plt.show()
