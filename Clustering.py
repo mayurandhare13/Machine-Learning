@@ -2,7 +2,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import LabelEncoder, OneHotEncoder
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, AgglomerativeClustering
+from scipy.cluster import hierarchy as shc
 
 dataset = pd.read_csv('data/Mall.csv')
 
@@ -54,4 +55,28 @@ plt.plot(range(1, 11), wcss)
 plt.title("The Elbow method")
 plt.xlabel("Number of clusters")
 plt.ylabel("WCSS")
+plt.show()
+
+
+## Hierarchial Clustering
+
+dd = shc.dendrogram(shc.linkage(X, method='ward'))
+# `ward` method tries to minimize the VARIANCE in each of the clusters
+plt.title("Dendrogram")
+plt.xlabel("Customers")
+plt.ylabel("Eucleadian Distance")
+plt.show()
+
+hc = AgglomerativeClustering(n_clusters=5, affinity='euclidean', linkage='ward')
+y_hc = hc.fit_predict(X)
+
+plt.scatter(X[y_hc == 0, 0], X[y_hc == 0, 1], s=50, c='orange', label='Careless')
+plt.scatter(X[y_hc == 1, 0], X[y_hc == 1, 1], s=50, c='magenta', label='Standard')
+plt.scatter(X[y_hc == 2, 0], X[y_hc == 2, 1], s=50, c='red', label='Target')
+plt.scatter(X[y_hc == 3, 0], X[y_hc == 3, 1], s=50, c='blue', label='Careful')
+plt.scatter(X[y_hc == 4, 0], X[y_hc == 4, 1], s=50, c='green', label='Sensible')
+plt.title("Clusters of Clients")
+plt.xlabel("Annual Income(k$)")
+plt.ylabel("Spending Score (1-100)")
+plt.legend()
 plt.show()
