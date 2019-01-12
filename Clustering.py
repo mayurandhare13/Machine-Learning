@@ -60,8 +60,8 @@ plt.show()
 
 ## Hierarchial Clustering
 
-dd = shc.dendrogram(hc.linkage(X, method='ward'))
-    # `ward` method tries to minimize the VARIANCE in each of the clusters
+dd = shc.dendrogram(shc.linkage(X, method='ward'))
+# `ward` method tries to minimize the VARIANCE in each of the clusters
 plt.title("Dendrogram")
 plt.xlabel("Customers")
 plt.ylabel("Euclidean Distance")
